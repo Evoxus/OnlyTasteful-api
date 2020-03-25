@@ -5,6 +5,16 @@ const cors = require('cors');
 const helmet = require('helmet');
 const { NODE_ENV, CLIENT_ORIGIN } = require('./config');
 
+// TODO: Setup DB, migrations and seed files
+// TODO: Build GET /api/recipes endpoint
+// TODO: Build GET /api/recipes/:recipeId endpoint
+// TODO: Build POST /api/auth/login endpoint
+// TODO: Build POST /api/users endpoint
+// TODO: Build POST /api/recipes endpoint (protected)
+// TODO: Build PATCH /api/recipes/:recipeId endpoint (protected)
+// TODO: Build DELETE /api/recipes/:recipeId endpoint (protected)
+
+
 const app = express();
 
 const morganOption = (NODE_ENV === 'production')
