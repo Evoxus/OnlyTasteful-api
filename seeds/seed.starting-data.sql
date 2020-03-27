@@ -78,7 +78,7 @@ INSERT INTO measurements (measurement_name) VALUES
   ('Lbs'),         -- 9
   ('Box'),         -- 10
   ('Bunch'),       -- 11
-  ('Jars')         -- 12
+  ('Jars'),        -- 12
   ('Dash');        -- 13
 
 INSERT INTO recipeIngredients (recipe_id, ingredient_id, measure_id, quantity) VALUES
