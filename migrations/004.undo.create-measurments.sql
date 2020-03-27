@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS measurments;
+DROP TABLE IF EXISTS measurements;
