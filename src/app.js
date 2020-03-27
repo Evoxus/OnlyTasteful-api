@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const { NODE_ENV, CLIENT_ORIGIN } = require('./config');
 const recipesRouter = require('./recipes/recipes-router');
 const authRouter = require('./auth/auth-router');
+const usersRouter = require('./users/users-router');
 
 // TODO: Build GET /api/recipes endpoint, setup but not selecting properly
 // TODO: Build GET /api/recipes/:recipeId endpoint, router setup but need to figure out joining
@@ -28,6 +29,7 @@ app.use(cors({
 // ROUTERS
 app.use('/api/recipes', recipesRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/users', usersRouter);
 
 app.use(function errorHandler(error, req, res, next) {
   let response
