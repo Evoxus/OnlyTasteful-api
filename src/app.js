@@ -9,7 +9,6 @@ const authRouter = require('./auth/auth-router');
 
 // TODO: Build GET /api/recipes endpoint, setup but not selecting properly
 // TODO: Build GET /api/recipes/:recipeId endpoint, router setup but need to figure out joining
-// TODO: Build POST /api/auth/login endpoint
 // TODO: Build POST /api/users endpoint
 // TODO: Build POST /api/recipes endpoint (protected)
 // TODO: Build PATCH /api/recipes/:recipeId endpoint (protected)
