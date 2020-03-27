@@ -1,0 +1,9 @@
+BEGIN;
+
+DROP TABLE IF EXISTS recipeingredients;
+DROP TABLE IF EXISTS measurements;
+DROP TABLE IF EXISTS ingredients;
+DROP TABLE IF EXISTS recipes;
+DROP TABLE IF EXISTS users;
+
+COMMIT;
