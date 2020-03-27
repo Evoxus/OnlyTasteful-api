@@ -8,7 +8,7 @@ describe('Recipes Endpoints', function() {
   const {
     testRecipes,
     testUsers,
-  } = helpers.makeRecipesFixtures()
+  } = helpers.makeRecipeFixtures()
 
   before('make knex instance', () => {
     db = knex({
@@ -33,5 +33,6 @@ describe('Recipes Endpoints', function() {
           .expect(200, [])
       })
     })
+  })
+})
 
-}

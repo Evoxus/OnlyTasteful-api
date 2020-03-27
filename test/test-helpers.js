@@ -4,25 +4,25 @@ const jwt = require('jsonwebtoken')
 function makeUsersArray() {
   return [
     {
-      id: 1,
+      user_id: 1,
       user_name: 'test-user-1',
       full_name: 'Test user 1',
       password: 'password',
     },
     {
-      id: 2,
+      user_id: 2,
       user_name: 'test-user-2',
       full_name: 'Test user 2',
       password: 'password',
     },
     {
-      id: 3,
+      user_id: 3,
       user_name: 'test-user-3',
       full_name: 'Test user 3',
       password: 'password',
     },
     {
-      id: 4,
+      user_id: 4,
       user_name: 'test-user-4',
       full_name: 'Test user 4',
       password: 'password',
@@ -426,8 +426,7 @@ function makeRecipeArray(users) {
 function makeRecipeFixtures() {
   const testUsers = makeUsersArray()
   const testRecipe = makeRecipeArray(testUsers)
-  const testReviews = makeReviewsArray(testUsers, testRecipe)
-  return { testUsers, testRecipe, testReviews }
+  return { testUsers, testRecipe }
 }
 
 function cleanTables(db) {
@@ -448,32 +447,23 @@ function seedUsers(db, users) {
     password: bcrypt.hashSync(user.password, 1)
   }))
   return db.into('users').insert(preppedUsers)
-    .then(() => 
-      db.raw(
-        `SELECT setval('users_id_seq', ?)`,
-        [users[users.length - 1].id],
-      )
-    )
+    // .then(() => 
+    //   db.raw(
+    //     `SELECT setval('users_id_seq', ?)`,
+    //     [users[users.length - 1].id],
+    //   )
+    // )
 }
 
-function seedRecipesTables(db, users, things, reviews=[]) {
+function seedRecipeTables(db, users, recipes) {
   return db.transaction(async trx => {
     await seedUsers(trx, users)
-    await trx.into('recipes').insert(things)
+    await trx.into('recipes').insert(recipes)
     await trx.raw(
       `SELECT setval('recipes_id_seq', ?)`,
-      [things[things.length - 1].id],
+      [recipes[recipes.length - 1].id],
     )
   })
-}
-
-function seedMaliciousRecipe(db, user, thing) {
-  return seedUsers(db, user)
-    .then(() =>
-      db
-        .into('recipes')
-        .insert([thing])
-    )
 }
 
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
@@ -487,12 +477,10 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
 module.exports = {
   makeUsersArray,
   makeRecipeArray,
-  makeMaliciousThing,
 
   makeRecipeFixtures,
   cleanTables,
   seedRecipeTables,
-  seedMaliciousRecipe,
   seedUsers,
   makeAuthHeader,
 }
