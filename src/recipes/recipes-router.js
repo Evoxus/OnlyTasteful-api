@@ -18,5 +18,11 @@ recipesRouter
   .route('/')
   .get((req, res, next) => {
     const knexInstance = req.app.get('db');
-    
+    recipesService.getAllRecipes(knexInstance)
+      .then(recipe => {
+        res.json(recipes.map(serializeRecipe))
+      })
+      .catch(next)
   })
+
+module.exports = recipesRouter;

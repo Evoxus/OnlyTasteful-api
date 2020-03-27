@@ -3,8 +3,8 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
-const recipesRouter = require('./recipes/recipes-router');
 const { NODE_ENV, CLIENT_ORIGIN } = require('./config');
+const recipesRouter = require('./recipes/recipes-router');
 
 // TODO: Build GET /api/recipes endpoint
 // TODO: Build GET /api/recipes/:recipeId endpoint
@@ -17,9 +17,7 @@ const { NODE_ENV, CLIENT_ORIGIN } = require('./config');
 
 const app = express();
 
-const morganOption = (NODE_ENV === 'production')
-  ? 'tiny'
-  : 'common';
+const morganOption = (NODE_ENV === 'production') ? 'tiny' : 'common';
 
 app.use(morgan(morganOption));
 app.use(helmet());
@@ -28,7 +26,6 @@ app.use(cors({
 }));
 
 // ROUTERS
-
 app.use('/recipes', recipesRouter);
 
 app.use(function errorHandler(error, req, res, next) {
