@@ -6,8 +6,8 @@ const helmet = require('helmet');
 const { NODE_ENV, CLIENT_ORIGIN } = require('./config');
 const recipesRouter = require('./recipes/recipes-router');
 
-// TODO: Build GET /api/recipes endpoint
-// TODO: Build GET /api/recipes/:recipeId endpoint
+// TODO: Build GET /api/recipes endpoint, setup but not selecting properly
+// TODO: Build GET /api/recipes/:recipeId endpoint, router setup but need to figure out joining
 // TODO: Build POST /api/auth/login endpoint
 // TODO: Build POST /api/users endpoint
 // TODO: Build POST /api/recipes endpoint (protected)
