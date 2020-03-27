@@ -20,7 +20,7 @@ recipesRouter
     const knexInstance = req.app.get('db');
     recipesService.getAllRecipes(knexInstance)
       .then(recipe => {
-        res.json(recipes.map(serializeRecipe))
+        res.json(recipe.map(serializeRecipe))
       })
       .catch(next)
   })
