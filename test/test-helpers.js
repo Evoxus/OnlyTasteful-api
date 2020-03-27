@@ -447,22 +447,12 @@ function seedUsers(db, users) {
     password: bcrypt.hashSync(user.password, 1)
   }))
   return db.into('users').insert(preppedUsers)
-    // .then(() => 
-    //   db.raw(
-    //     `SELECT setval('users_id_seq', ?)`,
-    //     [users[users.length - 1].id],
-    //   )
-    // )
 }
 
 function seedRecipeTables(db, users, recipes) {
   return db.transaction(async trx => {
     await seedUsers(trx, users)
     await trx.into('recipes').insert(recipes)
-    await trx.raw(
-      `SELECT setval('recipes_id_seq', ?)`,
-      [recipes[recipes.length - 1].id],
-    )
   })
 }
 
@@ -477,7 +467,6 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
 module.exports = {
   makeUsersArray,
   makeRecipeArray,
-
   makeRecipeFixtures,
   cleanTables,
   seedRecipeTables,
