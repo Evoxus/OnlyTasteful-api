@@ -113,6 +113,6 @@ INSERT INTO recipeIngredients (recipe_id, ingredient_id, measure_id, quantity) V
   (2, 27, 6, 1),
   (2, 28, 7, 3),
   (2, 29, 7, 1.5),
-  (2, 30, 8, 1),
+  (2, 30, 8, 1);
 
 COMMIT;
