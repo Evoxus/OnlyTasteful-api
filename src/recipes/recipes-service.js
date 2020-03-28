@@ -7,9 +7,9 @@ const recipesService = {
       .catch(err => console.log(err))
   },
   getRecipeById(knex, recipe_id) {
-    return knex
-      .from('recipes')
-      .select('*')
+    return recipesService.getAllRecipes(knex)
+      .where({ 'recipes.recipe_id': recipe_id })
+      .first()
       .catch(err => console.log(err))
   },
   createRecipe(knex, newRecipe) {
