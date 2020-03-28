@@ -90,7 +90,6 @@ const recipesService = {
       })
       .catch(err => console.log(err))
   },
-  // TODO: addRecipeIngredients (reference row between recipe, ingredients, measurements, and quantities)
   addRecipeIngredients(knex, references) {
     return knex
       .insert(references)
