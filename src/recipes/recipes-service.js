@@ -21,6 +21,16 @@ const recipesService = {
       .where({ recipe_id })
       .catch(err => console.log(err))
   },
+  getIngredients(knex) {
+    return knex('ingredients')
+      .select('*')
+      .catch(err => console.log(err))
+  },
+  getMeasurements(knex) {
+    return knex('measurements')
+      .select('*')
+      .catch(err => console.log(err))
+  },
   createRecipe(knex, newRecipe) {
     return knex
       .insert(newRecipe)
@@ -32,18 +42,29 @@ const recipesService = {
       )
       .catch(err => console.log(err))
   },
+  addIngredients(knex, ingredients) {
+    return knex
+      .insert(ingredients.map(ingredient => ({ ingredient_name: ingredient })))
+      .into('ingredients')
+      .returning('*')
+      .catch(err => console.log(err))
+  },
+  // addMeasurement
+  // addRecipeIngredients (reference row between recipe, ingredients, measurements, and quantities)
   deleteRecipe(knex, recipe_id) {
     return knex('recipes')
       .where({ recipe_id })
       .delete()
       .catch(err => console.log(err))
   },
+  // deleteRecipeIngredients
   updateRecipe(knex, recipe_id, newFields) {
     return knex('recipes')
       .where({ recipe_id })
       .update(newFields)
       .catch(err => console.log(err))
   }
+  // updateRecipeIngredients
 }
 
 module.exports = recipesService;
