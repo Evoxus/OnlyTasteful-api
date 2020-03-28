@@ -35,6 +35,18 @@ const recipesService = {
       .select('*')
       .catch(err => console.log(err))
   },
+  getIngredientIdByName(knex, ingredient_name) {
+    return knex('ingredients')
+      .select('id')
+      .where({ ingredient_name })
+      .first()
+  },
+  getMeasurementIdByName(knex, measurement_name) {
+    return knex('measurments')
+      .select('id')
+      .where({ measurement_name })
+      .first()
+  },
   createRecipe(knex, newRecipe) {
     return knex
       .insert(newRecipe)
@@ -79,6 +91,9 @@ const recipesService = {
       .catch(err => console.log(err))
   },
   // TODO: addRecipeIngredients (reference row between recipe, ingredients, measurements, and quantities)
+  addRecipeIngredients(knex, recipe_id, ingredient_id, measurement_id, quantity) {
+
+  },
   deleteRecipe(knex, recipe_id) {
     return knex('recipes')
       .where({ recipe_id })
