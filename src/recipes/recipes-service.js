@@ -62,7 +62,22 @@ const recipesService = {
       })
       .catch(err => console.log(err))
   },
-  // addMeasurement
+  addMeasurements(knex, measurements) {
+    return knex('measurements')
+      .select('*')
+      .where(measurements.map(measurement => ({ measurement_name: measurements })))
+      .then(rows => {
+        if (rows.length === 0) {
+          return knex
+            .insert(measurements.map(measurement => ({ measurement_name: measurements })))
+            .into('measurements')
+            .returning('*')
+        } else {
+          throw new Error('Measurement exists in database already')
+        }
+      })
+      .catch(err => console.log(err))
+  },
   // addRecipeIngredients (reference row between recipe, ingredients, measurements, and quantities)
   deleteRecipe(knex, recipe_id) {
     return knex('recipes')
