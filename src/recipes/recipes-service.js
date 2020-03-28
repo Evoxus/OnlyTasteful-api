@@ -65,11 +65,11 @@ const recipesService = {
   addMeasurements(knex, measurements) {
     return knex('measurements')
       .select('*')
-      .where(measurements.map(measurement => ({ measurement_name: measurements })))
+      .where(measurements.map(measurement => ({ measurement_name: measurement })))
       .then(rows => {
         if (rows.length === 0) {
           return knex
-            .insert(measurements.map(measurement => ({ measurement_name: measurements })))
+            .insert(measurements.map(measurement => ({ measurement_name: measurement })))
             .into('measurements')
             .returning('*')
         } else {
