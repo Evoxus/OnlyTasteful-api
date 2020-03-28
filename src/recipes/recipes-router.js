@@ -34,7 +34,7 @@ recipesRouter
   })
   .post(requireAuth, jsonParser, (req, res, next) => {
     const knexInstance = req.app.get('db');
-    const { title, description, instructions } = req.body
+    const { title, description, instructions, ingredients } = req.body
     const newRecipe = { title, description, instructions }
     for(const [key, value] of Object.entries(newRecipe))
       if(value == null) {
@@ -44,12 +44,24 @@ recipesRouter
       }
     
     newRecipe.user_id = req.user_id;
+    /* NOTES: 
+    * need to get id's for ingredients and measurements after create recipe, store recipeId and
+    * then pass that info into addRecipeIngredients for each ingredient
+    */
 
     recipesService.createRecipe(
       knexInstance,
       newRecipe
     )
       .then(recipe => {
+        ingredients.map(item => {
+          const ingredient = 
+          // addIngredient or getIdByName
+          // addMeasurement or getIdByName
+          // recipe.id add to object
+          // quantity add to object
+          // pass into addRecipeIngredient()
+        })
         res.status(201).location(path.posix.join(req.originalUrl, `/${recipe.recipe_id}`))
           .json(recipe.map(recipe => serializeRecipe(recipe)))
       })

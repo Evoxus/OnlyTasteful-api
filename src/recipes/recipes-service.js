@@ -25,12 +25,12 @@ const recipesService = {
       .where({ recipe_id })
       .catch(err => console.log(err))
   },
-  getIngredients(knex) {
+  getIngredients(knex) {  // add All after get
     return knex('ingredients')
       .select('*')
       .catch(err => console.log(err))
   },
-  getMeasurements(knex) {
+  getMeasurements(knex) {  // add All after get
     return knex('measurements')
       .select('*')
       .catch(err => console.log(err))
@@ -58,34 +58,34 @@ const recipesService = {
       )
       .catch(err => console.log(err))
   },
-  addIngredients(knex, ingredients) {
+  addIngredient(knex, ingredient) {
     return knex('ingredients')
       .select('*')
-      .where(ingredients.map(ingredient => ({ ingredient_name: ingredient })))
-      .then(rows => {
-        if (rows.length === 0) {
+      .where({ ingredient })
+      .then(item => {
+        if (item.length === 0) {
           return knex
-            .insert(ingredients.map(ingredient => ({ ingredient_name: ingredient })))
+            .insert({ ingredient_name: ingredient })
             .into('ingredients')
             .returning('*')
         } else {
-          return 'Ingredient already exists, a new one will not be created'
+          return item.id
         }
       })
       .catch(err => console.log(err))
   },
-  addMeasurements(knex, measurements) {
+  addMeasurements(knex, measurement) {
     return knex('measurements')
       .select('*')
-      .where(measurements.map(measurement => ({ measurement_name: measurement })))
-      .then(rows => {
-        if (rows.length === 0) {
+      .where({ measurement })
+      .then(item => {
+        if (item.length === 0) {
           return knex
-            .insert(measurements.map(measurement => ({ measurement_name: measurement })))
+            .insert({ measurement_name: measurement })
             .into('measurements')
             .returning('*')
         } else {
-          return 'Measurement already exists, a new one will not be created'
+          return item.id
         }
       })
       .catch(err => console.log(err))
