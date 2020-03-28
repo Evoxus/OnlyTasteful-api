@@ -8,7 +8,7 @@ const recipesService = {
   },
   getRecipeById(knex, recipe_id) {
     return recipesService.getAllRecipes(knex)
-      .where({ 'recipes.recipe_id': recipe_id })
+      .where({ recipe_id })
       .first()
       .catch(err => console.log(err))
   },
@@ -23,6 +23,12 @@ const recipesService = {
       )
       .catch(err => console.log(err))
   },
+  deleteRecipe(knex, recipe_id) {
+    return knex('recipes')
+      .where({ recipe_id })
+      .delete()
+      .catch(err => console.log(err))
+  }
 }
 
 module.exports = recipesService;
