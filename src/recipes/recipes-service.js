@@ -57,7 +57,7 @@ const recipesService = {
             .into('ingredients')
             .returning('*')
         } else {
-          throw new Error('Ingredient exists in database already')
+          return 'Ingredient already exists, a new one will not be created'
         }
       })
       .catch(err => console.log(err))
@@ -73,7 +73,7 @@ const recipesService = {
             .into('measurements')
             .returning('*')
         } else {
-          throw new Error('Measurement exists in database already')
+          return 'Measurement already exists, a new one will not be created'
         }
       })
       .catch(err => console.log(err))
