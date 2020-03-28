@@ -13,6 +13,13 @@ const recipesService = {
       .first()
       .catch(err => console.log(err))
   },
+  getIngredientsForRecipe(knex, recipe_id) {
+    return knex('recipeingredients AS ri')
+      .select('i.ingredient_name', 'm.measurement_name', 'ri.quantity')
+      .join('ingredients AS i', 'ri.ingredient_id', 'i.id')
+      .join('measurements AS m', 'ri.measure_id', 'm.id')
+      .where({ recipe_id })
+  },
   createRecipe(knex, newRecipe) {
     return knex
       .insert(newRecipe)

@@ -15,6 +15,13 @@ const serializeRecipe = recipe => ({
   instructions: xss(recipe.instructions)
 });
 
+const serializeIngredients = ingredient => ({
+  id: ingredient.id,
+  ingredient_name: xss(ingredient.ingredient_name),
+  quantity: ingredient.quantity,
+  measurement: ingredient.measurement_name
+})
+
 recipesRouter
   .route('/')
   .get((req, res, next) => {
@@ -66,9 +73,28 @@ recipesRouter
       next()
     })
     .catch(next)
+  },
+  (req, res, next) => {
+    recipesService.getIngredientsForRecipe(
+      req.app.get('db'),
+      req.params.recipe_id
+    )
+    .then(ingredients => {
+        if(!ingredients) {
+          return res.status(404).json({
+            error: { message: `Ingredients doesn't exist` }
+          })
+        }
+        res.ingredients = ingredients
+        next()
+      })
+      .catch(next)
   })
   .get((req, res, next) => {
-    res.json(serializeRecipe(res.recipe))
+    res.status(200).json({
+      recipe: serializeRecipe(res.recipe), 
+      ingredients: res.ingredients.map(ingredient => serializeIngredients(ingredient)
+    )})
   })
   .delete(requireAuth, (req, res, next) => {
     recipesService.deleteRecipe(
