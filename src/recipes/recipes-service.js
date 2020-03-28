@@ -91,8 +91,12 @@ const recipesService = {
       .catch(err => console.log(err))
   },
   // TODO: addRecipeIngredients (reference row between recipe, ingredients, measurements, and quantities)
-  addRecipeIngredients(knex, recipe_id, ingredient_id, measurement_id, quantity) {
-
+  addRecipeIngredients(knex, references) {
+    return knex
+      .insert(references)
+      .into('recipeingredients')
+      .returning('*')
+      .catch(err => console.log(err))
   },
   deleteRecipe(knex, recipe_id) {
     return knex('recipes')
