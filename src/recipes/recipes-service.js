@@ -28,6 +28,12 @@ const recipesService = {
       .where({ recipe_id })
       .delete()
       .catch(err => console.log(err))
+  },
+  updateRecipe(knex, recipe_id, newFields) {
+    return knex('recipes')
+      .where({ recipe_id })
+      .update(newFields)
+      .catch(err => console.log(err))
   }
 }
 

@@ -80,5 +80,27 @@ recipesRouter
     })
     .catch(next)
   })
+  .patch(requireAuth, jsonParser, (req, res, next) => {
+    const { title, description, instructions, ingredients } = req.body
+    const recipeToUpdate = { title, description, instructions, ingredients }
+
+    const numberOfValues = Object.values(recipeToUpdate).filter(Boolean).length
+    if (numberOfValues === 0)
+      return res.status(400).json({
+        error: {
+          message: `Request body must content either 'title', 'description', 'instructions' or 'ingredients'`
+        }
+      })
+
+    recipeService.updateRecipe(
+      req.app.get('db'),
+      req.params.recipe_id,
+      recipeToUpdate
+    )
+      .then(rows => {
+        res.status(204).end()
+      })
+      .catch(next)
+  })
 
 module.exports = recipesRouter;
