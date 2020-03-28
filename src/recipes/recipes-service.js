@@ -38,13 +38,13 @@ const recipesService = {
   getIngredientIdByName(knex, ingredient_name) {
     return knex('ingredients')
       .select('id')
-      .where({ ingredient_name })
+      .where({ name: ingredient_name })
       .first()
   },
   getMeasurementIdByName(knex, measurement_name) {
     return knex('measurments')
       .select('id')
-      .where({ measurement_name })
+      .where({ name: measurement_name })
       .first()
   },
   createRecipe(knex, newRecipe) {
@@ -61,29 +61,29 @@ const recipesService = {
   addIngredient(knex, ingredient) {
     return knex('ingredients')
       .select('*')
-      .where({ ingredient })
+      .where({ ingredient_name: ingredient })
       .then(item => {
         if (item.length === 0) {
           return knex
             .insert({ ingredient_name: ingredient })
             .into('ingredients')
-            .returning('*')
+            .returning('id')
         } else {
           return item.id
         }
       })
       .catch(err => console.log(err))
   },
-  addMeasurements(knex, measurement) {
+  addMeasurement(knex, measurement) {
     return knex('measurements')
       .select('*')
-      .where({ measurement })
+      .where({ measurement_name: measurement })
       .then(item => {
         if (item.length === 0) {
           return knex
             .insert({ measurement_name: measurement })
             .into('measurements')
-            .returning('*')
+            .returning('id')
         } else {
           return item.id
         }

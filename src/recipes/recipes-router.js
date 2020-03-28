@@ -32,10 +32,10 @@ recipesRouter
       })
       .catch(next)
   })
-  .post(requireAuth, jsonParser, (req, res, next) => {
+  .post(jsonParser, (req, res, next) => {
     const knexInstance = req.app.get('db');
-    const { title, description, instructions, ingredients } = req.body
-    const newRecipe = { title, description, instructions }
+    const { title, recipe_description, instructions, ingredients } = req.body
+    const newRecipe = { title, recipe_description, instructions }
     for(const [key, value] of Object.entries(newRecipe))
       if(value == null) {
         return res.status(400).json({
@@ -43,10 +43,14 @@ recipesRouter
         })
       }
     
-    newRecipe.user_id = req.user_id;
+    newRecipe.user_id = 1 // req.user_id;
     /* NOTES: 
     * need to get id's for ingredients and measurements after create recipe, store recipeId and
     * then pass that info into addRecipeIngredients for each ingredient
+    * as this stands it will post the recipe but the recipeIngredients are not being posted. Right now 
+    * getting unhandled promise rejection error.
+    * previous console.logs seemed to indicate the addIngredient() and addMeasurement() methods
+    * were hanging and not returning Id's as intended.
     */
 
     recipesService.createRecipe(
@@ -54,16 +58,28 @@ recipesRouter
       newRecipe
     )
       .then(recipe => {
-        ingredients.map(item => {
-          const ingredient = 
-          // addIngredient or getIdByName
-          // addMeasurement or getIdByName
-          // recipe.id add to object
-          // quantity add to object
-          // pass into addRecipeIngredient()
-        })
         res.status(201).location(path.posix.join(req.originalUrl, `/${recipe.recipe_id}`))
-          .json(recipe.map(recipe => serializeRecipe(recipe)))
+          .json(serializeRecipe(recipe))
+      })
+      .then(recipe => {
+        ingredients.map(async function(item) {
+          const ingredient = await function(item) {
+            recipesService.addIngredient(knexInstance, item.name)
+          }
+          const measurement = await function(item) {
+            recipesService.addMeasurement(knexInstance, item.unit)
+          }
+          const newReferences = {
+            recipe_id: recipe.id,
+            ingredient_id: ingredient,
+            measure_id: measurement,
+            quantity: item.quantity
+          }
+          recipesService.addRecipeIngredients(
+            knexInstance,
+            newReferences
+          )
+        })
       })
       .catch(next)
   })

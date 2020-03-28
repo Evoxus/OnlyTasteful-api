@@ -116,3 +116,5 @@ INSERT INTO recipeIngredients (recipe_id, ingredient_id, measure_id, quantity) V
   (2, 30, 8, 1);
 
 COMMIT;
+
+-- run seed file psql -U michael -d only-tasteful -f ./seeds/seed.starting-data.sql 
