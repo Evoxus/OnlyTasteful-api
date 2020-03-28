@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require('express');
 const xss = require('xss');
+const { requireAuth } = require('../middleware/jwt-auth');
 const recipesService = require('./recipes-service.js');
 
 const recipesRouter = express.Router();
@@ -21,6 +22,29 @@ recipesRouter
     recipesService.getAllRecipes(knexInstance)
       .then(recipe => {
         res.json(recipe.map(serializeRecipe))
+      })
+      .catch(next)
+  })
+  .post(requireAuth, jsonParser, (req, res, next) => {
+    const knexInstance = req.app.get('db');
+    const { title, description, instructions } = req.body
+    const newRecipe = { title, description, instructions }
+    for(const [key, value] of Object.entries(newRecipe))
+      if(value == null) {
+        return res.status(400).json({
+          error: `Missing '${key}' in request body`
+        })
+      }
+    
+    newRecipe.user_id = req.user_id;
+
+    recipesService.createRecipe(
+      knexInstance,
+      newRecipe
+    )
+      .then(recipe => {
+        res.status(201).location(path.posix.join(req.originalUrl, `/${recipe.recipe_id}`))
+          .json(recipe.map(recipe => serializeRecipe(recipe)))
       })
       .catch(next)
   })
