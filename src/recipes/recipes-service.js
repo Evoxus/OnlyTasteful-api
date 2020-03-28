@@ -19,6 +19,7 @@ const recipesService = {
       .join('ingredients AS i', 'ri.ingredient_id', 'i.id')
       .join('measurements AS m', 'ri.measure_id', 'm.id')
       .where({ recipe_id })
+      .catch(err => console.log(err))
   },
   createRecipe(knex, newRecipe) {
     return knex
