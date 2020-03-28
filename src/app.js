@@ -8,8 +8,6 @@ const recipesRouter = require('./recipes/recipes-router');
 const authRouter = require('./auth/auth-router');
 const usersRouter = require('./users/users-router');
 
-// TODO: Build GET /api/recipes endpoint, setup but not selecting properly
-// TODO: Build GET /api/recipes/:recipeId endpoint, router setup but need to figure out joining
 // TODO: Build POST /api/recipes endpoint (protected) Basic setup, service needs correcting
 // TODO: Build PATCH /api/recipes/:recipeId endpoint (protected) Basic setup, service needs correcting
 // TODO: Build DELETE /api/recipes/:recipeId endpoint (protected) Basic setup, service may need correcting
