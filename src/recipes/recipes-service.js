@@ -43,10 +43,19 @@ const recipesService = {
       .catch(err => console.log(err))
   },
   addIngredients(knex, ingredients) {
-    return knex
-      .insert(ingredients.map(ingredient => ({ ingredient_name: ingredient })))
-      .into('ingredients')
-      .returning('*')
+    return knex('ingredients')
+      .select('*')
+      .where(ingredients.map(ingredient => ({ ingredient_name: ingredient })))
+      .then(rows => {
+        if(rows.length === 0) {
+          return knex
+            .insert(ingredients.map(ingredient => ({ ingredient_name: ingredient })))
+            .into('ingredients')
+            .returning('*')
+        } else {
+          throw new Error('Ingredient exists in database already')
+        }
+      })
       .catch(err => console.log(err))
   },
   // addMeasurement
