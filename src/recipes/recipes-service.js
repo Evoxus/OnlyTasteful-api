@@ -2,10 +2,10 @@ const recipesService = {
   getAllRecipes(knex) {
     return knex
       .from('recipes AS r')
-      .select('r.title', 'r.recipe_description', 'r.recipe_id', 
+      .select('r.title', 'r.recipe_description', 'r.recipe_id',
         'r.user_id', 'r.instructions')
       .distinct()
-      .catch(err => console.log(err))
+    // .catch(err => console.log(err))
   },
   getRecipeById(knex, recipe_id) {
     return recipesService.getAllRecipes(knex)
@@ -19,7 +19,7 @@ const recipesService = {
       .into('recipes')
       .returning('*')
       .then(([recipe]) => recipe)
-      .then(recipe => 
+      .then(recipe =>
         recipesService.getRecipeById(knex, recipe.recipe_id)
       )
       .catch(err => console.log(err))
