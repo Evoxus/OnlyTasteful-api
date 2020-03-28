@@ -78,21 +78,21 @@ const recipesService = {
       })
       .catch(err => console.log(err))
   },
-  // addRecipeIngredients (reference row between recipe, ingredients, measurements, and quantities)
+  // TODO: addRecipeIngredients (reference row between recipe, ingredients, measurements, and quantities)
   deleteRecipe(knex, recipe_id) {
     return knex('recipes')
       .where({ recipe_id })
       .delete()
       .catch(err => console.log(err))
   },
-  // deleteRecipeIngredients
+  // TODO: deleteRecipeIngredients
   updateRecipe(knex, recipe_id, newFields) {
     return knex('recipes')
       .where({ recipe_id })
       .update(newFields)
       .catch(err => console.log(err))
   }
-  // updateRecipeIngredients
+  // TODO: updateRecipeIngredients
 }
 
 module.exports = recipesService;
