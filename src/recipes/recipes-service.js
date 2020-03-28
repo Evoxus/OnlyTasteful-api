@@ -5,10 +5,14 @@ const recipesService = {
       .select('r.title', 'r.recipe_description', 'r.recipe_id',
         'r.user_id', 'r.instructions')
       .distinct()
-    // .catch(err => console.log(err))
+      .catch(err => console.log(err))
   },
   getRecipeById(knex, recipe_id) {
-    return recipesService.getAllRecipes(knex)
+    return knex
+      .from('recipes AS r')
+      .select('r.title', 'r.recipe_description', 'r.recipe_id',
+        'r.user_id', 'r.instructions')
+      .distinct()
       .where({ recipe_id })
       .first()
       .catch(err => console.log(err))
@@ -47,7 +51,7 @@ const recipesService = {
       .select('*')
       .where(ingredients.map(ingredient => ({ ingredient_name: ingredient })))
       .then(rows => {
-        if(rows.length === 0) {
+        if (rows.length === 0) {
           return knex
             .insert(ingredients.map(ingredient => ({ ingredient_name: ingredient })))
             .into('ingredients')
