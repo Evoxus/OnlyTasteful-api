@@ -135,7 +135,7 @@ recipesRouter
       })
       .catch(next)
   })
-  .patch( jsonParser, (req, res, next) => {  // requireAuth,
+  .patch(jsonParser, (req, res, next) => {  // requireAuth,
     const { title, description, instructions, ingredients } = req.body
     const recipeToUpdate = { title, description, instructions }
     const numberOfValues = Object.values(recipeToUpdate).filter(Boolean).length
@@ -151,21 +151,31 @@ recipesRouter
         req.params.recipe_id,
         recipeToUpdate
       ),
-      ingredients.map(ingredient => {
-        Promise.all([
-          recipesService.addIngredient(req.app.get('db'), ingredient.name),
-          recipesService.addMeasurement(req.app.get('db'), ingredient.unit)
-        ])
-          .then(response => {
-            const update = { ingredient_id: response[0], measure_id: response[1]}
-            recipesService.updateRecipeIngredients(
-              req.app.get('db'),
-              req.params.recipe_id,
-              update
-            )
-          })
-      })
+      recipesService.deleteRecipeIngredients(
+        req.app.get('db'),
+        req.params.recipe_id,
+      )
     ])
+      .then(response => {
+        ingredients.map(ingredient => {
+          Promise.all([
+            recipesService.addIngredient(req.app.get('db'), ingredient.name),
+            recipesService.addMeasurement(req.app.get('db'), ingredient.unit)
+          ])
+            .then(response => {
+              const update = { 
+                recipe_id: req.params.recipe_id,
+                ingredient_id: response[0],
+                measure_id: response[1],
+                quantity: ingredient.quantity
+              }
+              recipesService.addRecipeIngredients(
+                req.app.get('db'),
+                update
+              )
+            })
+        })
+      })
       .then(rows => {
         res.status(204).end()
       })
