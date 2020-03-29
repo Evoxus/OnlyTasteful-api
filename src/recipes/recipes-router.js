@@ -36,13 +36,13 @@ recipesRouter
     const knexInstance = req.app.get('db');
     const { title, recipe_description, instructions, ingredients } = req.body
     const newRecipe = { title, recipe_description, instructions }
-    for(const [key, value] of Object.entries(newRecipe))
-      if(value == null) {
+    for (const [key, value] of Object.entries(newRecipe))
+      if (value == null) {
         return res.status(400).json({
           error: `Missing '${key}' in request body`
         })
       }
-    
+
     newRecipe.user_id = req.user_id;
 
     recipesService.createRecipe(
@@ -55,25 +55,25 @@ recipesRouter
         return recipe
       })
       .then(recipe => {
-        ingredients.map(function(item) {
+        ingredients.map(function (item) {
           Promise.all([
-            recipesService.addIngredient(knexInstance, item.name), 
+            recipesService.addIngredient(knexInstance, item.name),
             recipesService.addMeasurement(knexInstance, item.unit)
           ])
-          .then(response => {
-            const newReferences = {
-              recipe_id: recipe.recipe_id,
-              ingredient_id: response[0],
-              measure_id: response[1],
-              quantity: item.quantity
-            }
-            recipesService.addRecipeIngredients(
-              knexInstance,
-              newReferences
-            )
+            .then(response => {
+              const newReferences = {
+                recipe_id: recipe.recipe_id,
+                ingredient_id: response[0],
+                measure_id: response[1],
+                quantity: item.quantity
+              }
+              recipesService.addRecipeIngredients(
+                knexInstance,
+                newReferences
+              )
             })
             .catch(err => console.log(err))
-          })
+        })
       })
       .catch(next)
   })
@@ -85,38 +85,39 @@ recipesRouter
       req.app.get('db'),
       req.params.recipe_id
     )
-    .then(recipe => {
-      if(!recipe) {
-        return res.status(404).json({
-          error: { message: `Recipe doesn't exist` }
-        })
-      }
-      res.recipe = recipe
-      next()
-    })
-    .catch(next)
-  },
-  (req, res, next) => {
-    recipesService.getIngredientsForRecipe(
-      req.app.get('db'),
-      req.params.recipe_id
-    )
-    .then(ingredients => {
-        if(!ingredients) {
+      .then(recipe => {
+        if (!recipe) {
           return res.status(404).json({
-            error: { message: `Ingredients doesn't exist` }
+            error: { message: `Recipe doesn't exist` }
           })
         }
-        res.ingredients = ingredients
+        res.recipe = recipe
         next()
       })
       .catch(next)
-  })
+  },
+    (req, res, next) => {
+      recipesService.getIngredientsForRecipe(
+        req.app.get('db'),
+        req.params.recipe_id
+      )
+        .then(ingredients => {
+          if (!ingredients) {
+            return res.status(404).json({
+              error: { message: `Ingredients doesn't exist` }
+            })
+          }
+          res.ingredients = ingredients
+          next()
+        })
+        .catch(next)
+    })
   .get((req, res, next) => {
     res.status(200).json({
-      recipe: serializeRecipe(res.recipe), 
+      recipe: serializeRecipe(res.recipe),
       ingredients: res.ingredients.map(ingredient => serializeIngredients(ingredient)
-    )})
+      )
+    })
   })
   .delete((req, res, next) => { // requireAuth
     Promise.all([
@@ -127,17 +128,16 @@ recipesRouter
       recipesService.deleteRecipe(
         req.app.get('db'),
         parseInt(req.params.recipe_id)
-    )
+      )
     ])
-    .then(rows => {
-      res.status(204).end()
-    })
-    .catch(next)
+      .then(rows => {
+        res.status(204).end()
+      })
+      .catch(next)
   })
-  .patch(requireAuth, jsonParser, (req, res, next) => {
+  .patch( jsonParser, (req, res, next) => {  // requireAuth,
     const { title, description, instructions, ingredients } = req.body
-    const recipeToUpdate = { title, description, instructions, ingredients }
-
+    const recipeToUpdate = { title, description, instructions }
     const numberOfValues = Object.values(recipeToUpdate).filter(Boolean).length
     if (numberOfValues === 0)
       return res.status(400).json({
@@ -145,12 +145,27 @@ recipesRouter
           message: `Request body must content either 'title', 'description', 'instructions' or 'ingredients'`
         }
       })
-
-    recipeService.updateRecipe(
-      req.app.get('db'),
-      req.params.recipe_id,
-      recipeToUpdate
-    )
+    Promise.all([
+      recipesService.updateRecipe(
+        req.app.get('db'),
+        req.params.recipe_id,
+        recipeToUpdate
+      ),
+      ingredients.map(ingredient => {
+        Promise.all([
+          recipesService.addIngredient(req.app.get('db'), ingredient.name),
+          recipesService.addMeasurement(req.app.get('db'), ingredient.unit)
+        ])
+          .then(response => {
+            const update = { ingredient_id: response[0], measure_id: response[1]}
+            recipesService.updateRecipeIngredients(
+              req.app.get('db'),
+              req.params.recipe_id,
+              update
+            )
+          })
+      })
+    ])
       .then(rows => {
         res.status(204).end()
       })

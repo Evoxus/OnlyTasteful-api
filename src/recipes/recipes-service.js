@@ -116,7 +116,7 @@ const recipesService = {
       .catch(err => console.log(err))
   },
   updateRecipeIngredients(knex, recipe_id, newFields) {
-    return knex('recipes')
+    return knex('recipeingredients')
       .where({ recipe_id })
       .update(newFields)
       .catch(err => console.log(err))
