@@ -103,7 +103,12 @@ const recipesService = {
       .delete()
       .catch(err => console.log(err))
   },
-  // TODO: deleteRecipeIngredients
+  deleteRecipeIngredients(knex, recipe_id) {
+    return knex('recipeingredients')
+      .where({ recipe_id })
+      .delete()
+      .catch(err => console.log(err))
+  },
   updateRecipe(knex, recipe_id, newFields) {
     return knex('recipes')
       .where({ recipe_id })

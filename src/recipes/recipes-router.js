@@ -118,11 +118,17 @@ recipesRouter
       ingredients: res.ingredients.map(ingredient => serializeIngredients(ingredient)
     )})
   })
-  .delete(requireAuth, (req, res, next) => {
-    recipesService.deleteRecipe(
-      req.app.get('db'),
-      req.params.recipe_id
+  .delete((req, res, next) => { // requireAuth
+    Promise.all([
+      recipesService.deleteRecipeIngredients(
+        req.app.get('db'),
+        parseInt(req.params.recipe_id)
+      ),
+      recipesService.deleteRecipe(
+        req.app.get('db'),
+        parseInt(req.params.recipe_id)
     )
+    ])
     .then(rows => {
       res.status(204).end()
     })
