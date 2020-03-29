@@ -114,8 +114,13 @@ const recipesService = {
       .where({ recipe_id })
       .update(newFields)
       .catch(err => console.log(err))
-  }
-  // TODO: updateRecipeIngredients
+  },
+  updateRecipeIngredients(knex, recipe_id, newFields) {
+    return knex('recipes')
+      .where({ recipe_id })
+      .update(newFields)
+      .catch(err => console.log(err))
+  } 
 }
 
 module.exports = recipesService;
