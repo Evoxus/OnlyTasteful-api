@@ -32,7 +32,7 @@ recipesRouter
       })
       .catch(next)
   })
-  .post(jsonParser, (req, res, next) => {
+  .post(requireAuth, jsonParser, (req, res, next) => {
     const knexInstance = req.app.get('db');
     const { title, recipe_description, instructions, ingredients } = req.body
     const newRecipe = { title, recipe_description, instructions }
@@ -43,15 +43,7 @@ recipesRouter
         })
       }
     
-    newRecipe.user_id = 1 // req.user_id;
-    /* NOTES: 
-    * need to get id's for ingredients and measurements after create recipe, store recipeId and
-    * then pass that info into addRecipeIngredients for each ingredient
-    * as this stands it will post the recipe but the recipeIngredients are not being posted. Right now 
-    * getting unhandled promise rejection error.
-    * previous console.logs seemed to indicate the addIngredient() and addMeasurement() methods
-    * were hanging and not returning Id's as intended.
-    */
+    newRecipe.user_id = req.user_id;
 
     recipesService.createRecipe(
       knexInstance,
