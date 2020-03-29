@@ -8,10 +8,6 @@ const recipesRouter = require('./recipes/recipes-router');
 const authRouter = require('./auth/auth-router');
 const usersRouter = require('./users/users-router');
 
-// TODO: Build PATCH /api/recipes/:recipeId endpoint (protected) Basic setup, service needs correcting
-// TODO: Build DELETE /api/recipes/:recipeId endpoint (protected) Basic setup, service may need correcting
-
-
 const app = express();
 
 const morganOption = (NODE_ENV === 'production') ? 'tiny' : 'common';
