@@ -60,26 +60,28 @@ recipesRouter
       .then(recipe => {
         res.status(201).location(path.posix.join(req.originalUrl, `/${recipe.recipe_id}`))
           .json(serializeRecipe(recipe))
+        return recipe
       })
       .then(recipe => {
-        ingredients.map(async function(item) {
-          const ingredient = await function(item) {
-            recipesService.addIngredient(knexInstance, item.name)
-          }
-          const measurement = await function(item) {
+        ingredients.map(function(item) {
+          Promise.all([
+            recipesService.addIngredient(knexInstance, item.name), 
             recipesService.addMeasurement(knexInstance, item.unit)
-          }
-          const newReferences = {
-            recipe_id: recipe.id,
-            ingredient_id: ingredient,
-            measure_id: measurement,
-            quantity: item.quantity
-          }
-          recipesService.addRecipeIngredients(
-            knexInstance,
-            newReferences
-          )
-        })
+          ])
+          .then(response => {
+            const newReferences = {
+              recipe_id: recipe.recipe_id,
+              ingredient_id: response[0],
+              measure_id: response[1],
+              quantity: item.quantity
+            }
+            recipesService.addRecipeIngredients(
+              knexInstance,
+              newReferences
+            )
+            })
+            .catch(err => console.log(err))
+          })
       })
       .catch(next)
   })

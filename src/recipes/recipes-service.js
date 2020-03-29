@@ -69,7 +69,7 @@ const recipesService = {
             .into('ingredients')
             .returning('id')
         } else {
-          return item.id
+          return item[0].id
         }
       })
       .catch(err => console.log(err))
@@ -85,7 +85,7 @@ const recipesService = {
             .into('measurements')
             .returning('id')
         } else {
-          return item.id
+          return item[0].id
         }
       })
       .catch(err => console.log(err))
