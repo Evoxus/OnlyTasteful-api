@@ -3,7 +3,8 @@ const recipesService = {
     return knex
       .from('recipes AS r')
       .select('r.title', 'r.recipe_description', 'r.recipe_id',
-        'r.user_id', 'r.instructions')
+        'r.user_id', 'r.instructions', 'u.user_name')
+      .join('users AS u', 'r.user_id', 'u.user_id')
       .distinct()
       .catch(err => console.log(err))
   },
@@ -11,7 +12,8 @@ const recipesService = {
     return knex
       .from('recipes AS r')
       .select('r.title', 'r.recipe_description', 'r.recipe_id',
-        'r.user_id', 'r.instructions')
+        'r.user_id', 'r.instructions', 'u.user_name')
+      .join('users AS u', 'r.user_id', 'u.user_id')
       .distinct()
       .where({ recipe_id })
       .first()

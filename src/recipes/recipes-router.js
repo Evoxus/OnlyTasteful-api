@@ -10,6 +10,7 @@ const jsonParser = express.json();
 const serializeRecipe = recipe => ({
   id: recipe.recipe_id,
   user_id: recipe.user_id,
+  user_name: xss(recipe.user_name),
   title: xss(recipe.title),
   recipe_description: xss(recipe.recipe_description),
   instructions: xss(recipe.instructions)
@@ -57,8 +58,8 @@ recipesRouter
       .then(recipe => {
         ingredients.map(function (item) {
           Promise.all([
-            recipesService.addIngredient(knexInstance, item.name),
-            recipesService.addMeasurement(knexInstance, item.unit)
+            recipesService.addIngredient(knexInstance, item.ingredient_name),
+            recipesService.addMeasurement(knexInstance, item.measurement_name)
           ])
             .then(response => {
               const newReferences = {
