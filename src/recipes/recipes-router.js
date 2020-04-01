@@ -44,7 +44,7 @@ recipesRouter
         })
       }
 
-    newRecipe.user_id = req.user_id;
+    newRecipe.user_id = req.user.user_id;
 
     recipesService.createRecipe(
       knexInstance,
@@ -63,10 +63,10 @@ recipesRouter
           ])
             .then(response => {
               const newReferences = {
-                recipe_id: recipe.recipe_id,
-                ingredient_id: response[0],
-                measure_id: response[1],
-                quantity: item.quantity
+                recipe_id: parseInt(recipe.recipe_id),
+                ingredient_id: parseInt(response[0]),
+                measure_id: parseInt(response[1]),
+                quantity: parseInt(item.quantity)
               }
               recipesService.addRecipeIngredients(
                 knexInstance,
@@ -120,17 +120,15 @@ recipesRouter
       )
     })
   })
-  .delete((req, res, next) => { // requireAuth
-    Promise.all([
-      recipesService.deleteRecipeIngredients(
-        req.app.get('db'),
-        parseInt(req.params.recipe_id)
-      ),
+  .delete(requireAuth, (req, res, next) => { // requireAuth
+    recipesService.deleteRecipeIngredients(
+      req.app.get('db'),
+      parseInt(req.params.recipe_id)
+    ).then(
       recipesService.deleteRecipe(
         req.app.get('db'),
         parseInt(req.params.recipe_id)
-      )
-    ])
+      ))
       .then(rows => {
         res.status(204).end()
       })
@@ -164,7 +162,7 @@ recipesRouter
             recipesService.addMeasurement(req.app.get('db'), ingredient.unit)
           ])
             .then(response => {
-              const update = { 
+              const update = {
                 recipe_id: req.params.recipe_id,
                 ingredient_id: response[0],
                 measure_id: response[1],
