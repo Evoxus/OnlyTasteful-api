@@ -19,8 +19,8 @@ const serializeRecipe = recipe => ({
 const serializeIngredients = ingredient => ({
   id: ingredient.id,
   ingredient_name: xss(ingredient.ingredient_name),
-  quantity: ingredient.quantity,
-  measurement: ingredient.measurement_name
+  quantity: xss(ingredient.quantity),
+  measurement: xss(ingredient.measurement_name)
 })
 
 recipesRouter
