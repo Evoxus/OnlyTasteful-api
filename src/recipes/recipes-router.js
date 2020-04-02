@@ -134,9 +134,9 @@ recipesRouter
       })
       .catch(next)
   })
-  .patch(jsonParser, (req, res, next) => {  // requireAuth,
-    const { title, description, instructions, ingredients } = req.body
-    const recipeToUpdate = { title, description, instructions }
+  .patch(requireAuth, jsonParser, (req, res, next) => {  
+    const { title, recipe_description, instructions, ingredients } = req.body
+    const recipeToUpdate = { title, recipe_description, instructions }
     const numberOfValues = Object.values(recipeToUpdate).filter(Boolean).length
     if (numberOfValues === 0)
       return res.status(400).json({
@@ -158,15 +158,15 @@ recipesRouter
       .then(response => {
         ingredients.map(ingredient => {
           Promise.all([
-            recipesService.addIngredient(req.app.get('db'), ingredient.name),
-            recipesService.addMeasurement(req.app.get('db'), ingredient.unit)
+            recipesService.addIngredient(req.app.get('db'), ingredient.ingredient_name),
+            recipesService.addMeasurement(req.app.get('db'), ingredient.measurement)
           ])
             .then(response => {
               const update = {
-                recipe_id: req.params.recipe_id,
-                ingredient_id: response[0],
-                measure_id: response[1],
-                quantity: ingredient.quantity
+                recipe_id: parseInt(req.params.recipe_id),
+                ingredient_id: parseInt(response[0]),
+                measure_id: parseInt(response[1]),
+                quantity: parseInt(ingredient.quantity)
               }
               recipesService.addRecipeIngredients(
                 req.app.get('db'),
