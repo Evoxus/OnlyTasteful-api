@@ -59,14 +59,14 @@ recipesRouter
         ingredients.map(function (item) {
           Promise.all([
             recipesService.addIngredient(knexInstance, item.ingredient_name),
-            recipesService.addMeasurement(knexInstance, item.measurement_name)
+            recipesService.addMeasurement(knexInstance, item.measurement)
           ])
             .then(response => {
               const newReferences = {
-                recipe_id: parseInt(recipe.recipe_id),
-                ingredient_id: parseInt(response[0]),
-                measure_id: parseInt(response[1]),
-                quantity: parseInt(item.quantity)
+                recipe_id: recipe.recipe_id,
+                ingredient_id: response[0],
+                measure_id: response[1],
+                quantity: item.quantity
               }
               recipesService.addRecipeIngredients(
                 knexInstance,
