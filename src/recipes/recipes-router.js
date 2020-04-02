@@ -163,10 +163,10 @@ recipesRouter
           ])
             .then(response => {
               const update = {
-                recipe_id: parseInt(req.params.recipe_id),
-                ingredient_id: parseInt(response[0]),
-                measure_id: parseInt(response[1]),
-                quantity: parseInt(ingredient.quantity)
+                recipe_id: req.params.recipe_id,
+                ingredient_id: response[0],
+                measure_id: response[1],
+                quantity: ingredient.quantity
               }
               recipesService.addRecipeIngredients(
                 req.app.get('db'),
