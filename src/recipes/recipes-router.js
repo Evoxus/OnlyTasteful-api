@@ -57,11 +57,13 @@ recipesRouter
       })
       .then(recipe => {
         ingredients.map(function (item) {
+          console.log('item inside ingredients map', item)
           Promise.all([
             recipesService.addIngredient(knexInstance, item.ingredient_name),
             recipesService.addMeasurement(knexInstance, item.measurement)
           ])
             .then(response => {
+              console.log('response of promises', response)
               const newReferences = {
                 recipe_id: recipe.recipe_id,
                 ingredient_id: response[0],
