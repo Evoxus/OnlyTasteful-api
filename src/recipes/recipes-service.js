@@ -6,7 +6,7 @@ const recipesService = {
         'r.recipe_id',
         'r.title',
         'r.recipe_description',
-        'r.instructions', 
+        'r.instructions',
         'r.user_id',
         'u.user_id',
         'u.user_name')
@@ -17,10 +17,16 @@ const recipesService = {
   getRecipeById(knex, recipe_id) {
     return knex
       .from('recipes AS r')
-      .select('r.title', 'r.recipe_description', 'r.recipe_id',
-        'r.user_id', 'r.instructions', 'u.user_name')
+      .select(
+        'r.recipe_id',
+        'r.title',
+        'r.recipe_description',
+        'r.instructions',
+        'r.user_id',
+        'u.user_id',
+        'u.user_name')
       .join('users AS u', 'r.user_id', 'u.user_id')
-      .distinct()
+      .groupBy('r.recipe_id', 'u.user_id')
       .where({ recipe_id })
       .first()
       .catch(err => console.log(err))
@@ -108,7 +114,7 @@ const recipesService = {
       .where({ recipe_id })
       .update(newFields)
       .catch(err => console.log(err))
-  } 
+  }
 }
 
 module.exports = recipesService;
