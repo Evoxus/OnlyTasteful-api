@@ -56,7 +56,7 @@ describe('Recipes Endpoints', function () {
     })
   })
 
-  describe.only(`GET /api/recipe/:recipe_id`, () => {
+  describe(`GET /api/recipe/:recipe_id`, () => {
     context('Given there are recipe in the database', () => {
       beforeEach('insert recipe', () =>
         helpers.seedRecipeTables(
@@ -91,11 +91,55 @@ describe('Recipes Endpoints', function () {
             }
           ]
         }
-
         return supertest(app)
           .get(`/api/recipes/${recipeId}`)
           .expect(200, expectedRecipe)
       })
+    })
+  })
+
+  describe.only(`POST /api/recipes`, () => {
+    beforeEach(`insert users`, () => helpers.seedUsers(db, testUsers))
+
+    it('creates new recipe responding with 201', () => {
+      const testUser = testUsers[0]
+      const newRecipe = {
+        user_id: 1,
+        title: 'testTitle',
+        recipe_description: 'testDescription',
+        instructions: 'testInstructions',
+        ingredients: {
+          ingredient_name: 'food',
+          measurement: 'unit',
+          quantity: 1
+        }
+      }
+      return supertest(app)
+        .post('/api/recipes')
+        .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
+        .send(newRecipe)
+        .expect(201)
+        .expect(res => {
+          expect(res.body).to.have.property('id')
+          expect(res.body.title).to.eql(newRecipe.title)
+          expect(res.body.recipe_description).to.eql(newRecipe.recipe_description)
+          expect(res.body.instructions).to.eql(newRecipe.instructions)
+          expect(res.body.user_id).to.eql(testUser.user_id)
+          expect(res.headers.location).to.eql(`/api/recipes/${res.body.id}`)
+        })
+        .expect(res => 
+          db
+            .from('recipes')
+            .select('*')
+            .where({ recipe_id: res.body.recipe_id })
+            .first()
+            .then(row => {
+              expect(row.title).to.eql(newRecipe.title)
+              expect(row.recipe_description).to.eql(newRecipe.recipe_description)
+              expect(row.instructions).to.eql(newRecipe.instructions)
+              expect(row.user.user_id).to.eql(testUser.user_id)
+            })
+        )
     })
   })
   // TODO: need create, update, and delete
