@@ -2,12 +2,15 @@ const knex = require('knex')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe('Recipes Endpoints', function() {
+describe('Recipes Endpoints', function () {
   let db
 
   const {
     testRecipes,
     testUsers,
+    testIngredients,
+    testMeasurements,
+    testRelations,
   } = helpers.makeRecipeFixtures()
 
   before('make knex instance', () => {
@@ -29,8 +32,26 @@ describe('Recipes Endpoints', function() {
       it(`responds with 200 and an empty list`, () => {
         return supertest(app)
           .get('/api/recipes')
-          .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
           .expect(200, [])
+      })
+    })
+    context(`Given recipes`, () => {
+      beforeEach('insert recipes into db', () =>
+        helpers.seedRecipeTables(
+          db,
+          testUsers,
+          testRecipes,
+          testIngredients,
+          testMeasurements,
+          testRelations,
+        )
+      )
+
+      it.only(`responds with 200 and all recipes`, () => {
+        const expectedResult = testRecipes.map((recipe, idx) => helpers.makeExpectedRecipe(recipe, idx + 1))
+        return supertest(app)
+          .get('/api/recipes')
+          .expect(200, expectedResult)
       })
     })
   })

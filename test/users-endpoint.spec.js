@@ -62,7 +62,7 @@ describe('Users Endpoints', function () {
         return supertest(app)
           .post('/api/users')
           .send(userShortPassword)
-          .expect(400, { error: `Password needs to be longer than 8 characters` })
+          .expect(400, { error: `Password needs to be 8 or more characters` })
       })
 
       it(`responds with 400 'Password must be less than 72 characters' when more than 72 characters in password`, () => {

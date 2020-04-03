@@ -2,10 +2,16 @@ const recipesService = {
   getAllRecipes(knex) {
     return knex
       .from('recipes AS r')
-      .select('r.title', 'r.recipe_description', 'r.recipe_id',
-        'r.user_id', 'r.instructions', 'u.user_name')
+      .select(
+        'r.recipe_id',
+        'r.title',
+        'r.recipe_description',
+        'r.instructions', 
+        'r.user_id',
+        'u.user_id',
+        'u.user_name')
       .join('users AS u', 'r.user_id', 'u.user_id')
-      .distinct()
+      .groupBy('r.recipe_id', 'u.user_id')
       .catch(err => console.log(err))
   },
   getRecipeById(knex, recipe_id) {
