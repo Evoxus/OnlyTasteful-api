@@ -5,8 +5,8 @@ const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*
 
 const UserService = {
   validatePassword(password) {
-    if (password.length <= 8) {
-      return 'Password needs to be longer than 8 characters'
+    if (password.length <= 7) {
+      return 'Password needs to be 8 or more characters'
     }
     if (password.length > 72) {
       return 'Password must be less than 72 characters'
