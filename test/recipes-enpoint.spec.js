@@ -47,11 +47,54 @@ describe('Recipes Endpoints', function () {
         )
       )
 
-      it.only(`responds with 200 and all recipes`, () => {
+      it(`responds with 200 and all recipes`, () => {
         const expectedResult = testRecipes.map((recipe, idx) => helpers.makeExpectedRecipe(recipe, idx + 1))
         return supertest(app)
           .get('/api/recipes')
           .expect(200, expectedResult)
+      })
+    })
+  })
+
+  describe.only(`GET /api/recipe/:recipe_id`, () => {
+    context('Given there are recipe in the database', () => {
+      beforeEach('insert recipe', () =>
+        helpers.seedRecipeTables(
+          db,
+          testUsers,
+          testRecipes,
+          testIngredients,
+          testMeasurements,
+          testRelations,
+        )
+      )
+      it(`responds with 404`, () => {
+        const recipeId = 123456
+        return supertest(app)
+          .get(`/api/recipes/${recipeId}`)
+          .expect(404, { error: `Recipe doesn't exist` })
+      })
+
+      it('responds with 200 and the specified recipe', () => {
+        const recipeId = 2
+        const expectedRecipe =
+        {
+          recipe: helpers.makeExpectedRecipe(
+            testRecipes[1],
+            2
+          ),
+          ingredients: [
+            {
+              ingredient_name: 'Food',
+              quantity: '2',
+              measurement: 'Unit'
+            }
+          ]
+        }
+
+        return supertest(app)
+          .get(`/api/recipes/${recipeId}`)
+          .expect(200, expectedRecipe)
       })
     })
   })

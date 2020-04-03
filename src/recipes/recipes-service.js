@@ -10,7 +10,7 @@ const recipesService = {
         'r.user_id',
         'u.user_id',
         'u.user_name')
-      .join('users AS u', 'r.user_id', 'u.user_id')
+      .leftJoin('users AS u', 'r.user_id', 'u.user_id')
       .groupBy('r.recipe_id', 'u.user_id')
       .catch(err => console.log(err))
   },
@@ -25,9 +25,9 @@ const recipesService = {
         'r.user_id',
         'u.user_id',
         'u.user_name')
-      .join('users AS u', 'r.user_id', 'u.user_id')
+      .leftJoin('users AS u', 'r.user_id', 'u.user_id')
       .groupBy('r.recipe_id', 'u.user_id')
-      .where({ recipe_id })
+      .where('r.recipe_id', recipe_id)
       .first()
       .catch(err => console.log(err))
   },

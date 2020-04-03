@@ -81,23 +81,8 @@ recipesRouter
 
 recipesRouter
   .route('/:recipe_id')
+  .all(checkRecipeExists)
   .all((req, res, next) => {
-    recipesService.getRecipeById(
-      req.app.get('db'),
-      req.params.recipe_id
-    )
-      .then(recipe => {
-        if (!recipe) {
-          return res.status(404).json({
-            error: { message: `Recipe doesn't exist` }
-          })
-        }
-        res.recipe = recipe
-        next()
-      })
-      .catch(next)
-  },
-    (req, res, next) => {
       recipesService.getIngredientsForRecipe(
         req.app.get('db'),
         req.params.recipe_id
@@ -180,5 +165,24 @@ recipesRouter
       })
       .catch(next)
   })
+
+  async function checkRecipeExists(req, res, next) {
+    try {
+      await recipesService.getRecipeById(
+        req.app.get('db'),
+        req.params.recipe_id
+      ).then(recipe => {
+        if (!recipe)
+        return res.status(404).json({
+          error: `Recipe doesn't exist`
+        })
+  
+      res.recipe = recipe
+      next()
+      })
+    } catch (error) {
+      next(error)
+    }
+  }
 
 module.exports = recipesRouter;
