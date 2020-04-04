@@ -14,20 +14,7 @@ const morganOption = (NODE_ENV === 'production') ? 'tiny' : 'common';
 
 app.use(morgan(morganOption));
 app.use(helmet());
-const allowedOrigins = ['http://localhost:3000', 'https://only-tasteful.now.sh/']
-app.use(cors(
-  // {
-  //   origin: function (origin, callback) {
-  //     if (!origin) return callback(null, true);
-  //     if (allowedOrigins.indexOf(origin) === -1) {
-  //       const msg = 
-  //       'The CORS policy for this site does not allow access from the specified Origin.';
-  //       return callback(new Error(msg), false);
-  //     }
-  //     return callback(null, true);
-  //   }
-  // }
-));
+app.use(cors());
 
 // ROUTERS
 app.use('/api/recipes', recipesRouter);
