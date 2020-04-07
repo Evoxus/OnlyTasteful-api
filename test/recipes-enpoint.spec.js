@@ -98,7 +98,7 @@ describe('Recipes Endpoints', function () {
     })
   })
 
-  describe.only(`POST /api/recipes`, () => {
+  describe(`POST /api/recipes`, () => {
     beforeEach(`insert users`, () => helpers.seedUsers(db, testUsers))
 
     it('creates new recipe responding with 201', () => {
@@ -127,7 +127,7 @@ describe('Recipes Endpoints', function () {
           expect(res.body.user_id).to.eql(testUser.user_id)
           expect(res.headers.location).to.eql(`/api/recipes/${res.body.id}`)
         })
-        .expect(res => 
+        .expect(res =>
           db
             .from('recipes')
             .select('*')
@@ -143,5 +143,62 @@ describe('Recipes Endpoints', function () {
     })
   })
   // TODO: need update and delete
+  describe.only(`PATCH /api/recipes/:recipe_id`, () => {
+    beforeEach('insert recipe', () =>
+      helpers.seedRecipeTables(
+        db,
+        testUsers,
+        testRecipes,
+        testIngredients,
+        testMeasurements,
+        testRelations,
+      )
+    )
+    it(`updates recipe and responds with 204`, () => {
+      const recipeId = 2
+      const updateRecipe = {
+        title: 'updateTitle',
+        recipe_description: 'updateDescription',
+        instructions: 'updateInstructions',
+        ingredients: [{
+          ingredient_name: 'food',
+          measurement: 'unit',
+          quantity: 1
+        }]
+      }
+      const expectedRecipe =
+      {
+        recipe: helpers.makeExpectedRecipe(
+          updateRecipe,
+          2
+        ),
+        ingredients: [
+          {
+            ingredient_name: 'Food',
+            quantity: '2',
+            measurement: 'Unit'
+          }
+        ]
+      }
+      return supertest(app)
+        .patch(`/api/recipes/${recipeId}`)
+        .set('Authorization', helpers.makeAuthHeader(testUsers[1]))
+        .send(updateRecipe)
+        .expect(204)
+        .expect(res =>
+          db
+            .from('recipes')
+            .select('*')
+            .where({ recipe_id: recipeId })
+            .first()
+            .then(row => {
+              expect(row.title).to.eql(expectedRecipe.title)
+              expect(row.recipe_description).to.eql(expectedRecipe.recipe_description)
+              expect(row.instructions).to.eql(expectedRecipe.instructions)
+            })
+        )
+    })
+  })
+
 })
 

@@ -129,6 +129,12 @@ recipesRouter
           message: `Request body must content either 'title', 'description', 'instructions' or 'ingredients'`
         }
       })
+    if (ingredients.length === 0) 
+      return res.status(400).json({
+        error: {
+          message: `Request must contain at least 1 ingredient`
+        }
+      })
     Promise.all([
       recipesService.updateRecipe(
         req.app.get('db'),
