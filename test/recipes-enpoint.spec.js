@@ -142,6 +142,6 @@ describe('Recipes Endpoints', function () {
         )
     })
   })
-  // TODO: need create, update, and delete
+  // TODO: need update and delete
 })
 

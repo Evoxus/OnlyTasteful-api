@@ -10,6 +10,7 @@ TRUNCATE
 
 INSERT INTO users (user_name, password, full_name) VALUES
   ('Someguy', '$2b$12$UAZpzmcYQ2MPKoaSCRZeGOduDQpt93Ds82TZI.XWux8WxRNoIVPLK', 'Some Dumb Guy'),
+  ('demo', '$2b$12$UAZpzmcYQ2MPKoaSCRZeGOduDQpt93Ds82TZI.XWux8WxRNoIVPLK', 'John Doe'),;
   ('Somegirl', '$2b$12$UAZpzmcYQ2MPKoaSCRZeGOduDQpt93Ds82TZI.XWux8WxRNoIVPLK', 'Jane Someone');
 
 INSERT INTO recipes (user_id, title, recipe_description, instructions) VALUES

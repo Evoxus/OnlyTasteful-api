@@ -29,7 +29,7 @@ CREATE TABLE recipeingredients (
   recipe_id INTEGER REFERENCES recipes (recipe_id),
   ingredient_id INTEGER REFERENCES ingredients (id),
   measure_id INTEGER REFERENCES measurements (id),
-  quantity REAL NOT NULL
+  quantity TEXT NOT NULL
 );
 
 COMMIT;
