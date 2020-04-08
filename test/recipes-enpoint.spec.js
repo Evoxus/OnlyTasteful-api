@@ -142,8 +142,8 @@ describe('Recipes Endpoints', function () {
         )
     })
   })
-  // TODO: need update and delete
-  describe.only(`PATCH /api/recipes/:recipe_id`, () => {
+
+  describe(`PATCH /api/recipes/:recipe_id`, () => {
     beforeEach('insert recipe', () =>
       helpers.seedRecipeTables(
         db,
@@ -196,6 +196,39 @@ describe('Recipes Endpoints', function () {
               expect(row.recipe_description).to.eql(expectedRecipe.recipe_description)
               expect(row.instructions).to.eql(expectedRecipe.instructions)
             })
+        )
+    })
+  })
+
+  describe(`DELETE /api/recipe/:recipe_id`, () => {
+    // Not sure why after each not functioning properly here
+    // but ensuring cleanup fixed
+    before('cleanup', () => helpers.cleanTables(db))
+
+    beforeEach('insert recipe', () =>
+      helpers.seedRecipeTables(
+        db,
+        testUsers,
+        testRecipes,
+        testIngredients,
+        testMeasurements,
+        testRelations,
+      )
+    )
+    it(`deletes recipe responding with 204`, () => {
+      const recipeId = 2
+      return supertest(app)
+        .delete(`/api/recipes/${recipeId}`)
+        .set('Authorization', helpers.makeAuthHeader(testUsers[1]))
+        .expect(204)
+        .expect(res => db
+          .from('recipes')
+          .select('*')
+          .where({ recipe_id: recipeId })
+          .first()
+          .then(row => {
+            expect(row.length === 0)
+          })
         )
     })
   })
