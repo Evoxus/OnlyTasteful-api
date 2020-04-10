@@ -1,24 +1,30 @@
-# OnlyTasteful-api
+# OnlyTasteful
 
-This is the backend for the OnlyTasteful-client
+Find it live at:[https://only-tasteful.now.sh/]](https://only-tasteful.now.sh/)
+A cook book for the modern cook. 
 
-## Set up
+## Summary
 
-Complete the following steps to start:
+This project is a solution to keeping one's recipes in a basic note taking
+app. This is a purpose built app for collecting recipes, modifying them, noting changes you've tried, ect.
 
-1. Clone this repository to your local machine `git clone THIS-REPO-URL`
-2. `cd` into the cloned repository
-3. Install the node dependencies `npm install`
-4. Make your changes
+## Screenshots
 
-## Scripts
+![alt text](./Landing_Screenshot.png "Landing page screenshot")
+![alt text](./RecipeDetails_Screenshot.png "Recipe details page screenshot")
 
-Start the application `npm start`
+## API Built With
 
-Start nodemon for the application `npm run dev`
+* [Node](https://nodejs.org/) - Backend framework
+* [Postgresql](https://www.postgresql.org/) - Database implementation
+* [Knex](http://knexjs.org/) - SQL query builder
+* JSON Web Tokens
+* [Heroku](https://www.heroku.com/) - API deployed to Heroku and requisitioning a Postgresql DB, using the Heroku CLI tool.
 
-Run the tests `npm test`
+## Authors
 
-## Deploying
+* **Michael H Ploughman** - *Initial work* - [Evoxus](https://github.com/Evoxus)
 
-When your changes are ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's master branch.
+## Acknowledgments
+
+* Thinkful
