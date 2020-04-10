@@ -101,7 +101,6 @@ recipesRouter
     });
   })
   .delete(requireAuth, (req, res, next) => {
-    // requireAuth
     recipesService
       .deleteRecipeIngredients(req.app.get('db'), parseInt(req.params.recipe_id))
       .then(recipesService.deleteRecipe(req.app.get('db'), parseInt(req.params.recipe_id)))
@@ -114,6 +113,7 @@ recipesRouter
     const { title, recipe_description, instructions, ingredients } = req.body;
     const recipeToUpdate = { title, recipe_description, instructions };
     const numberOfValues = Object.values(recipeToUpdate).filter(Boolean).length;
+    // Validate existence of recipe data
     if (numberOfValues === 0)
       return res.status(400).json({
         error: {
@@ -128,11 +128,13 @@ recipesRouter
       });
     Promise.all([
       recipesService.updateRecipe(req.app.get('db'), req.params.recipe_id, recipeToUpdate),
+      // Clear relation table before rebuilding
       recipesService.deleteRecipeIngredients(req.app.get('db'), req.params.recipe_id),
     ])
       .then((response) => {
         ingredients.map((ingredient) => {
           Promise.all([
+            // These both check for item and either add it if it doesn't exist or get the Id if it does
             recipesService.addIngredient(req.app.get('db'), ingredient.ingredient_name),
             recipesService.addMeasurement(req.app.get('db'), ingredient.measurement),
           ]).then((response) => {
@@ -142,6 +144,7 @@ recipesRouter
               measure_id: response[1],
               quantity: ingredient.quantity,
             };
+            // Rebuilding the relations table
             recipesService.addRecipeIngredients(req.app.get('db'), update);
           });
         });
