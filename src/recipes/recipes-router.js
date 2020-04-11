@@ -129,6 +129,7 @@ recipesRouter
     Promise.all([
       recipesService.updateRecipe(req.app.get('db'), req.params.recipe_id, recipeToUpdate),
       // Clear relation table before rebuilding
+      // may be why we have to timeout before loading
       recipesService.deleteRecipeIngredients(req.app.get('db'), req.params.recipe_id),
     ])
       .then((response) => {
