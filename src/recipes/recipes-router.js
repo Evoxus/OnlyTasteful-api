@@ -38,15 +38,16 @@ recipesRouter
     const knexInstance = req.app.get('db');
     const { title, recipe_description, instructions, ingredients } = req.body;
     const newRecipe = { title, recipe_description, instructions };
+    // Validate presence of needed values for new recipe
     for (const [key, value] of Object.entries(newRecipe))
       if (value == null) {
         return res.status(400).json({
           error: `Missing '${key}' in request body`,
         });
       }
-
+    // Attach the logged in user to the new recipe
     newRecipe.user_id = req.user.user_id;
-
+    // Post to the DB and return the Id of the new recipe
     recipesService
       .createRecipe(knexInstance, newRecipe)
       .then((recipe) => {
@@ -57,12 +58,15 @@ recipesRouter
         return recipe;
       })
       .then((recipe) => {
+        // Check if the ingredients & measurements are already in the DB
+        // Adding them if not and returning the Id in either case
         ingredients.map(function (item) {
           Promise.all([
             recipesService.addIngredient(knexInstance, item.ingredient_name),
             recipesService.addMeasurement(knexInstance, item.measurement),
           ])
             .then((response) => {
+              // Take those Ids and pass into the reference table along with quantities
               const newReferences = {
                 recipe_id: recipe.recipe_id,
                 ingredient_id: response[0],
@@ -129,7 +133,7 @@ recipesRouter
     Promise.all([
       recipesService.updateRecipe(req.app.get('db'), req.params.recipe_id, recipeToUpdate),
       // Clear relation table before rebuilding
-      // may be why we have to timeout before loading
+      // (Interviewer suggested this may be why we have to timeout before loading on client side)
       recipesService.deleteRecipeIngredients(req.app.get('db'), req.params.recipe_id),
     ])
       .then((response) => {
